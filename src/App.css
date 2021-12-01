@@ -1,0 +1,11 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 10px;
+
+  font-family: sans-serif;
+  color: #252525;
+  background-color: #777777;
+}

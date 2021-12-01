@@ -1,17 +1,14 @@
 import { useState, useEffect } from "react";
 import TrackingItem from "./TrackingItem";
-
-const URL =
-  "https://react-http-a246f-default-rtdb.firebaseio.com/tr-numbers.json";
+import Card from "./UI/Card";
+import { getAllItems } from "../api/api";
 
 const TrackingNumberList = () => {
   const [trackingNumbers, setTrackingNumbers] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
-      const result = await fetch(URL);
-
-      const responseData = await result.json();
+      const responseData = await getAllItems();
 
       const loadedNumbers = [];
 
@@ -37,7 +34,7 @@ const TrackingNumberList = () => {
     <TrackingItem itemData={item} key={item.id} />
   ));
 
-  return <h2>{trackingNumbersList}</h2>;
+  return <Card>{trackingNumbersList}</Card>;
 };
 
 export default TrackingNumberList;

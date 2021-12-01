@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import Card from "./UI/Card";
 
 const URL =
   "https://react-http-a246f-default-rtdb.firebaseio.com/tr-numbers.json";
@@ -39,21 +40,23 @@ const AddTrackingForm = () => {
     // tell tracking number list to update (via contextAPI)
   };
   return (
-    <form onSubmit={formSubmitHandler}>
-      <label htmlFor="tr_number">Tracking number:</label>
-      <input type="text" name="tr_number" ref={trNumber} />
+    <Card>
+      <form onSubmit={formSubmitHandler}>
+        <label htmlFor="tr_number">Tracking number:</label>
+        <input type="text" name="tr_number" ref={trNumber} />
 
-      <label htmlFor="carrierr">Carrier:</label>
-      <input type="text" name="carrier" ref={carrier} />
+        <label htmlFor="carrierr">Carrier:</label>
+        <input type="text" name="carrier" ref={carrier} />
 
-      <label htmlFor="marketplace">Marketplace:</label>
-      <input type="text" name="marketplace" ref={marketplace} />
+        <label htmlFor="marketplace">Marketplace:</label>
+        <input type="text" name="marketplace" ref={marketplace} />
 
-      <label htmlFor="mktOrderNumber">Marketplace order Number:</label>
-      <input type="text" name="mktOrderNumber" ref={mktOrderNumber} />
+        <label htmlFor="mktOrderNumber">Marketplace order Number:</label>
+        <input type="text" name="mktOrderNumber" ref={mktOrderNumber} />
 
-      <input type="submit" value="Submit" />
-    </form>
+        <input type="submit" value="Submit" />
+      </form>
+    </Card>
   );
 };
 
