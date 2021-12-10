@@ -3,7 +3,7 @@ import TrackingItem from "./TrackingItem";
 import Card from "./UI/Card";
 import { getAllItems } from "../api/api";
 
-const TrackingNumberList = () => {
+const TrackingNumberList = (props) => {
   const [trackingNumbers, setTrackingNumbers] = useState([]);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const TrackingNumberList = () => {
     }
 
     fetchData();
-  }, []);
+  }, [props.updateVal]);
 
   console.log(trackingNumbers);
 

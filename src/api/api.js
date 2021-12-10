@@ -2,11 +2,10 @@
 // import fetch from "node-fetch";
 
 const FIREBASE_DOMAIN = "https://react-http-a246f-default-rtdb.firebaseio.com";
+const ALL_ITEMS = "tr-numbers";
 
 export async function getAllItems() {
-  const allItems = "tr-numbers";
-
-  const response = await fetch(`${FIREBASE_DOMAIN}/${allItems}.json`);
+  const response = await fetch(`${FIREBASE_DOMAIN}/${ALL_ITEMS}.json`);
 
   const result = await response.json();
 
@@ -14,31 +13,51 @@ export async function getAllItems() {
 }
 
 export async function getTrackingInfo(trNumber) {
-  const trStatus = "tr-status";
+  if (!trNumber) {
+    return { message: "No tracking number found" };
+  }
+  try {
+    const response = await fetch(`http://192.168.56.1:5000/${trNumber}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-  const response = await fetch(
-    `${FIREBASE_DOMAIN}/${trStatus}/${trNumber}.json`
-  );
+    console.log(response);
 
-  const result = await response.json();
+    if (!response.ok) {
+      console.log("Not ok");
+      throw new Error(`Can't get details. Error code: ${response.status}`);
+    }
 
-  return result;
+    const result = await response.json();
+
+    return result;
+  } catch (err) {
+    console.log(err);
+  }
 }
 
-// .then((response) => response.text())
-// .then((result) => console.log(result))
-// .catch((error) => console.log("error", error));
+export async function submitToDatabase(data) {
+  const response = await fetch(`${FIREBASE_DOMAIN}/${ALL_ITEMS}.json`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
 
-// export async function testFetch() {
-//   const response = await fetch("https://usps.com");
-//   const text = await response.text();
-//   const dom = await new JSDOM(text);
-//   console.log(dom.window.document.querySelector("h1").textContent);
-// }
+  return response.json();
+}
 
-// export async function testFetch() {
-//   const response = await fetch("https://reddit.com/");
-//   const body = await response.text();
-//   console.log(body); // prints a chock full of HTML richness
-//   return body;
-// }
+export async function deleteFromDatabase(id) {
+  const response = await fetch(`${FIREBASE_DOMAIN}/${ALL_ITEMS}/${id}.json`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    // body: data,
+  });
+
+  return response.json();
+}

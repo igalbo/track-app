@@ -1,31 +1,23 @@
 import React, { useRef } from "react";
 import Card from "./UI/Card";
+import { submitToDatabase } from "../api/api";
+import { v4 as uuid } from "uuid";
 
-const URL =
-  "https://react-http-a246f-default-rtdb.firebaseio.com/tr-numbers.json";
-
-const AddTrackingForm = () => {
+const AddTrackingForm = (props) => {
   const trNumber = useRef();
   const carrier = useRef();
   const marketplace = useRef();
   const mktOrderNumber = useRef();
-
-  const submitToDatabase = async (data) => {
-    const response = await fetch(URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    return response.json();
-  };
+  const key = uuid();
 
   const formSubmitHandler = (event) => {
     event.preventDefault();
+
+    props.updateList(false);
+
     // create data object
     const enteredData = {
+      key,
       trNumber: trNumber.current.value,
       carrier: carrier.current.value,
       marketplace: marketplace.current.value,
@@ -34,11 +26,12 @@ const AddTrackingForm = () => {
 
     // add tracking number to database
     submitToDatabase(enteredData);
+    // tell tracking number list to update (via props, later via contextAPI)
+    props.updateList(true);
 
     console.log(enteredData);
-
-    // tell tracking number list to update (via contextAPI)
   };
+
   return (
     <Card>
       <form onSubmit={formSubmitHandler}>
