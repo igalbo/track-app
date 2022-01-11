@@ -5,7 +5,17 @@
 body {
   padding: 10px;
 
-  font-family: sans-serif;
+  font-family: Quicksand;
   color: #252525;
-  background-color: #777777;
+  background-color: #ffffff;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.header .header-controls > * {
+  margin: 10px;
 }

@@ -61,3 +61,20 @@ export async function deleteFromDatabase(id) {
 
   return response.json();
 }
+
+export async function addTrackingInfo(id, data) {
+  const myData = JSON.stringify(data);
+
+  const response = await fetch(
+    `${FIREBASE_DOMAIN}/${ALL_ITEMS}/${id}/trackingInfo.json`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: myData,
+    }
+  );
+
+  return response.json();
+}
