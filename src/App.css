@@ -8,6 +8,9 @@ body {
   font-family: Quicksand;
   color: #252525;
   background-color: #ffffff;
+  width: 100%;
+  max-width: 1400px;
+  margin: auto;
 }
 
 .header {
@@ -18,4 +21,9 @@ body {
 
 .header .header-controls > * {
   margin: 10px;
+}
+
+.info-boxes {
+  display: flex;
+  justify-content: space-between;
 }

@@ -1,11 +1,13 @@
-import AddTrackingForm from "./components/AddTrackingForm";
-import TrackingNumberList from "./components/TrackingNumberList";
 import { Button } from "@material-ui/core";
 import PrintIcon from "@mui/icons-material/Print";
 import DownloadIcon from "@mui/icons-material/Download";
+import { Fragment, useState } from "react";
+
+import AddTrackingForm from "./components/AddTrackingForm";
+import TrackingNumberList from "./components/TrackingNumberList";
+import InfoBox from "./components/InfoBox";
 
 import "./App.css";
-import { Fragment, useState } from "react";
 
 function App() {
   const [isUpdated, setIsUpdated] = useState(false);
@@ -15,6 +17,7 @@ function App() {
       <div className="header">
         <h1>Dashboard</h1>
         <div className="header-controls">
+          {/* Date filter */}
           <Button variant="contained" disableElevation>
             <PrintIcon />
           </Button>
@@ -23,11 +26,11 @@ function App() {
           </Button>
         </div>
       </div>
-      <div className="infoBoxes">
-        {/* Late InfoBox */}
-        {/* On Schedule InfoBox */}
-        {/* Delivered InfoBox */}
-        {/* Unknown InfoBox */}
+      <div className="info-boxes">
+        <InfoBox type="Late" total="154" />
+        <InfoBox type="On Schedule" total="1809" />
+        <InfoBox type="Delivered" total="114" />
+        <InfoBox type="Unknown" total="27" />
       </div>
       <div className="stats">
         {/* shipments pie chart */}

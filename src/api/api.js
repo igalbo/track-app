@@ -17,7 +17,7 @@ export async function getTrackingInfo(trNumber) {
     return { message: "No tracking number found" };
   }
   try {
-    const response = await fetch(`http://192.168.56.1:5000/${trNumber}`, {
+    const response = await fetch(`http://localhost:5000/${trNumber}`, {
       headers: {
         "Content-Type": "application/json",
       },
