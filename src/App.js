@@ -1,19 +1,40 @@
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import PrintIcon from "@mui/icons-material/Print";
 import DownloadIcon from "@mui/icons-material/Download";
-import { Fragment, useState } from "react";
+import { useState } from "react";
+import { createTheme, ThemeProvider } from "@mui/material";
 
 import AddTrackingForm from "./components/AddTrackingForm";
 import TrackingNumberList from "./components/TrackingNumberList";
 import InfoBox from "./components/InfoBox";
+import DataTable from "./components/DataTable";
 
 import "./App.css";
+
+const THEME = createTheme({
+  typography: {
+    fontFamily: [
+      "Quicksand",
+      "Segoe UI",
+      "Roboto",
+      "Oxygen",
+      "Ubuntu",
+      "Cantarell",
+      "Fira Sans",
+      "Droid Sans",
+      "Helvetica Neue",
+    ].join(","),
+  },
+  shape: {
+    borderRadius: 16,
+  },
+});
 
 function App() {
   const [isUpdated, setIsUpdated] = useState(false);
 
   return (
-    <Fragment>
+    <ThemeProvider theme={THEME}>
       <div className="header">
         <h1>Dashboard</h1>
         <div className="header-controls">
@@ -43,8 +64,9 @@ function App() {
       </div>
 
       <AddTrackingForm updateList={setIsUpdated} />
+      <DataTable />
       <TrackingNumberList updateVal={isUpdated} />
-    </Fragment>
+    </ThemeProvider>
   );
 }
 

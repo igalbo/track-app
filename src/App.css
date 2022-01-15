@@ -4,10 +4,7 @@
 
 body {
   padding: 10px;
-
-  font-family: Quicksand;
   color: #252525;
-  background-color: #ffffff;
   width: 100%;
   max-width: 1400px;
   margin: auto;
@@ -26,4 +23,5 @@ body {
 .info-boxes {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
