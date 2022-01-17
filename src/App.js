@@ -16,11 +16,12 @@ TO DO
 =====
 
 V Put data from database into table
-- Make "refresh" and "pause" work
+V Make "refresh" work
+- Add color to status
+- Make "pause" work
 - Add "Loading" spinner
 - Make sure data updates correctly (add a short delay before refresh?)
 - Add "Add order button" that opens a modal for adding items
-- Add color to status
 V Add url to tracking #
 - Make list sortable
 - Add/Remove Tag modal
@@ -62,6 +63,7 @@ function App() {
       </div>
       <div className="info-boxes">
         <InfoBox type="Late" total="154" />
+        <InfoBox type="On Hold/Lost" total="8" />
         <InfoBox type="On Schedule" total="1809" />
         <InfoBox type="Delivered" total="114" />
         <InfoBox type="Unknown" total="27" />

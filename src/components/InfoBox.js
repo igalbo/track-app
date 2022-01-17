@@ -10,6 +10,8 @@ function InfoBox({ type, total = 0 }) {
       ? "#EA3D2F"
       : type === "On Schedule"
       ? "#367BF5"
+      : type === "Unknown"
+      ? "#5E6366"
       : "#F3AA18";
 
   return (

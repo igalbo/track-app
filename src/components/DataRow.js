@@ -10,6 +10,7 @@ import { getTrackingInfo } from "../api/api";
 
 function DataRow({ row }) {
   const [status, setStatus] = useState(row.status);
+  const maxStatusLength = 50;
 
   const getTrackingUrl = (tracking, carrier) => {
     if (carrier.toLowerCase() === "usps") {
@@ -21,8 +22,16 @@ function DataRow({ row }) {
 
   const refreshStatusHandler = async () => {
     const trackData = await getTrackingInfo(row.tracking);
-    console.log("Inside status handler. Status is: ", trackData);
+
+    console.log(trackData);
+
     setStatus(trackData?.Status);
+  };
+
+  const statusColor = () => {
+    if (status.toLowerCase().startsWith("delivered")) {
+      return "success";
+    }
   };
 
   return (
@@ -48,7 +57,12 @@ function DataRow({ row }) {
       )}
       <TableCell>{row.carrier}</TableCell>
       <TableCell>
-        <Chip label={status} />
+        {status && (
+          <Chip
+            color={statusColor()}
+            label={status.substring(0, maxStatusLength)}
+          />
+        )}
       </TableCell>
       <TableCell>{row.marketplace}</TableCell>
       <TableCell>
