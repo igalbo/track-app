@@ -1,38 +1,51 @@
-import { Button } from "@mui/material";
 import PrintIcon from "@mui/icons-material/Print";
 import DownloadIcon from "@mui/icons-material/Download";
-import { useState } from "react";
-import { createTheme, ThemeProvider } from "@mui/material";
+import { useEffect, useState } from "react";
+import { ThemeProvider, Button } from "@mui/material";
 
-import AddTrackingForm from "./components/AddTrackingForm";
-import TrackingNumberList from "./components/TrackingNumberList";
+// import AddTrackingForm from "./components/AddTrackingForm";
 import InfoBox from "./components/InfoBox";
 import DataTable from "./components/DataTable";
+import { getAllItems, getTrackingInfo } from "./api/api";
+import THEME from "./components/UI/muiTheme";
 
 import "./App.css";
 
-const THEME = createTheme({
-  typography: {
-    fontFamily: [
-      "Quicksand",
-      "Segoe UI",
-      "Roboto",
-      "Oxygen",
-      "Ubuntu",
-      "Cantarell",
-      "Fira Sans",
-      "Droid Sans",
-      "Helvetica Neue",
-    ].join(","),
-  },
-  shape: {
-    borderRadius: 16,
-  },
-});
+/*
+TO DO
+=====
+
+V Put data from database into table
+- Make "refresh" and "pause" work
+- Add "Loading" spinner
+- Make sure data updates correctly (add a short delay before refresh?)
+- Add "Add order button" that opens a modal for adding items
+- Add color to status
+V Add url to tracking #
+- Make list sortable
+- Add/Remove Tag modal
+
+*/
 
 function App() {
-  const [isUpdated, setIsUpdated] = useState(false);
+  // const [isUpdated, setIsUpdated] = useState(false);
+  const [data, setData] = useState();
 
+  useEffect(() => {
+    async function fetchData() {
+      const response = await getAllItems();
+
+      for (const key in response) {
+        const trackData = await getTrackingInfo(response[key].tracking);
+        response[key].status = trackData?.Status;
+      }
+      setData(response);
+    }
+
+    fetchData();
+  }, []);
+
+  console.log(data);
   return (
     <ThemeProvider theme={THEME}>
       <div className="header">
@@ -60,12 +73,10 @@ function App() {
         {/* add order button */}
       </div>
       <div className="table">
-        {/* table. fields: order date, order, tr. #, carrier, status, marketplace, tags, actions */}
+        <DataTable data={data} />
       </div>
 
-      <AddTrackingForm updateList={setIsUpdated} />
-      <DataTable />
-      <TrackingNumberList updateVal={isUpdated} />
+      {/* <AddTrackingForm updateList={setIsUpdated} /> */}
     </ThemeProvider>
   );
 }
