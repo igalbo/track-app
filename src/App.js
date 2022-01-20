@@ -1,11 +1,12 @@
 import PrintIcon from "@mui/icons-material/Print";
 import DownloadIcon from "@mui/icons-material/Download";
 import { useEffect, useState } from "react";
-import { ThemeProvider, Button } from "@mui/material";
+import { ThemeProvider, Button, LinearProgress, Box } from "@mui/material";
 
 // import AddTrackingForm from "./components/AddTrackingForm";
 import InfoBox from "./components/InfoBox";
 import DataTable from "./components/DataTable";
+import AddItemForm from "./components/AddItemForm";
 import { getAllItems, getTrackingInfo } from "./api/api";
 import THEME from "./components/UI/muiTheme";
 
@@ -17,23 +18,25 @@ TO DO
 
 V Put data from database into table
 V Make "refresh" work
-- Add color to status
+V Add url to tracking #
+- Add colors to status
 - Make "pause" work
-- Add "Loading" spinner
+V Add "Loading" spinner
 - Make sure data updates correctly (add a short delay before refresh?)
 - Add "Add order button" that opens a modal for adding items
-V Add url to tracking #
 - Make list sortable
-- Add/Remove Tag modal
+- "Add/Remove Tags" modal
 
 */
 
 function App() {
   // const [isUpdated, setIsUpdated] = useState(false);
   const [data, setData] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true);
       const response = await getAllItems();
 
       for (const key in response) {
@@ -41,16 +44,25 @@ function App() {
         response[key].status = trackData?.Status;
       }
       setData(response);
+      setIsLoading(false);
     }
 
     fetchData();
   }, []);
 
   console.log(data);
+
+  const loadingBar = (
+    <Box sx={{ width: "100%" }}>
+      <LinearProgress />
+    </Box>
+  );
+
   return (
     <ThemeProvider theme={THEME}>
       <div className="header">
         <h1>Dashboard</h1>
+        {isLoading && <h2>Loading...</h2>}
         <div className="header-controls">
           {/* Date filter */}
           <Button variant="contained" disableElevation>
@@ -72,10 +84,10 @@ function App() {
         {/* shipments pie chart */}
         {/* breakdown filter */}
         {/* bar chart */}
-        {/* add order button */}
+        <AddItemForm />
       </div>
       <div className="table">
-        <DataTable data={data} />
+        {isLoading ? loadingBar : <DataTable data={data} />}
       </div>
 
       {/* <AddTrackingForm updateList={setIsUpdated} /> */}
