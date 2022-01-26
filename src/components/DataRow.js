@@ -79,7 +79,7 @@ function DataRow({ row }) {
           </Paper>
         </Modal>
       )}
-      <TableRow row>
+      <TableRow row="true">
         <TableCell>{row.date}</TableCell>
         <TableCell>{row.order}</TableCell>
         {row.tracking ? (
@@ -115,8 +115,8 @@ function DataRow({ row }) {
         </TableCell>
         <TableCell>{row.marketplace}</TableCell>
         <TableCell>
-          {row.tags?.map((tag) => (
-            <Chip label={tag} />
+          {row.tags?.map((tag, i) => (
+            <Chip key={i} label={tag} />
           ))}
         </TableCell>
 

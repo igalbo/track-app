@@ -5,11 +5,13 @@ const FIREBASE_DOMAIN = "https://react-http-a246f-default-rtdb.firebaseio.com";
 const ALL_ITEMS = "tr-numbers";
 
 export async function getAllItems() {
-  const response = await fetch(`${FIREBASE_DOMAIN}/${ALL_ITEMS}.json`);
-
-  const result = await response.json();
-
-  return result;
+  try {
+    const response = await fetch(`${FIREBASE_DOMAIN}/${ALL_ITEMS}.json`);
+    const result = await response.json();
+    return result;
+  } catch (err) {
+    return err;
+  }
 }
 
 export async function getTrackingInfo(trNumber) {

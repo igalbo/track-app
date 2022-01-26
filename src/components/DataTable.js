@@ -19,8 +19,10 @@ export default function DataTable({ data }) {
     "Actions",
   ];
 
-  const columns = columnNames.map((colName) => (
-    <TableCell sx={{ fontWeight: 600 }}>{colName}</TableCell>
+  const columns = columnNames.map((colName, i) => (
+    <TableCell key={i} sx={{ fontWeight: 600 }}>
+      {colName}
+    </TableCell>
   ));
 
   const rows = [];
@@ -38,7 +40,7 @@ export default function DataTable({ data }) {
     });
   }
 
-  const tableData = rows.map((row) => <DataRow row={row} />);
+  const tableData = rows.map((row, i) => <DataRow key={i} row={row} />);
 
   return (
     <TableContainer
