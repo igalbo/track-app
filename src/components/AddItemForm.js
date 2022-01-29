@@ -8,6 +8,9 @@ import MenuItem from "@mui/material/MenuItem";
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { Button } from "@mui/material";
+
+import { submitToDatabase } from "../api/api";
 
 function AddItemForm() {
   const [carrier, setCarrier] = useState("");
@@ -27,8 +30,24 @@ function AddItemForm() {
   };
 
   const handleDateChange = (event) => {
-    console.log(event);
-    setDate(event);
+    setDate(event.toLocaleString("en-US"));
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    const tags = tagsRef.current.value ? tagsRef.current.value.split(",") : [];
+
+    const enteredData = {
+      tracking: trackingRef.current.value,
+      carrier: carrier,
+      marketplace: marketplace,
+      order: orderRef.current.value,
+      date: date,
+      tags: tags,
+    };
+
+    submitToDatabase(enteredData);
   };
 
   return (
@@ -39,6 +58,7 @@ function AddItemForm() {
       }}
       noValidate
       autoComplete="off"
+      onSubmit={submitHandler}
     >
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DateTimePicker
@@ -48,8 +68,18 @@ function AddItemForm() {
           renderInput={(params) => <TextField {...params} />}
         />
       </LocalizationProvider>
-      <TextField id="order" label="Order #" variant="standard" />
-      <TextField id="tracking" label="Tracking #" variant="standard" />
+      <TextField
+        id="order"
+        label="Order #"
+        variant="standard"
+        inputRef={orderRef}
+      />
+      <TextField
+        id="tracking"
+        label="Tracking #"
+        variant="standard"
+        inputRef={trackingRef}
+      />
       <FormControl fullWidth>
         <InputLabel id="select-carrier-label">Carrier</InputLabel>
         <Select
@@ -59,9 +89,9 @@ function AddItemForm() {
           label="Carrier"
           onChange={handleCarrierChange}
         >
-          <MenuItem value="usps">USPS</MenuItem>
-          <MenuItem value="china-post">China Post</MenuItem>
-          <MenuItem value="other">Other</MenuItem>
+          <MenuItem value="USPS">USPS</MenuItem>
+          <MenuItem value="China Post">China Post</MenuItem>
+          <MenuItem value="Other">Other</MenuItem>
         </Select>
       </FormControl>
       <FormControl fullWidth>
@@ -73,14 +103,21 @@ function AddItemForm() {
           label="Marketplace"
           onChange={handleMarketplaceChange}
         >
-          <MenuItem value="shopify">Shopify</MenuItem>
-          <MenuItem value="china-post">Amazon</MenuItem>
-          <MenuItem value="china-post">eBay</MenuItem>
-          <MenuItem value="other">Other</MenuItem>
+          <MenuItem value="Shopify">Shopify</MenuItem>
+          <MenuItem value="Amazon">Amazon</MenuItem>
+          <MenuItem value="Ebay">eBay</MenuItem>
+          <MenuItem value="Other">Other</MenuItem>
         </Select>
       </FormControl>
 
-      <TextField id="tags" label="Tags (comma separated)" variant="standard" />
+      <TextField
+        id="tags"
+        label="Tags (comma separated)"
+        variant="standard"
+        inputRef={tagsRef}
+      />
+
+      <Button type="submit">Add</Button>
     </Box>
   );
 }

@@ -82,6 +82,7 @@ function DataRow({ row }) {
       <TableRow row="true">
         <TableCell>{row.date}</TableCell>
         <TableCell>{row.order}</TableCell>
+
         {row.tracking ? (
           <TableCell
             component="a"
@@ -99,6 +100,7 @@ function DataRow({ row }) {
         ) : (
           <TableCell>Not Available</TableCell>
         )}
+
         <TableCell>{row.carrier}</TableCell>
         <TableCell>
           {isLoading ? (
