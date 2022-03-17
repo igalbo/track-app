@@ -1,15 +1,7 @@
 import PrintIcon from "@mui/icons-material/Print";
 import DownloadIcon from "@mui/icons-material/Download";
 import { useEffect, useState } from "react";
-import {
-  ThemeProvider,
-  Button,
-  LinearProgress,
-  Box,
-  Modal,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { ThemeProvider, Button, LinearProgress, Box } from "@mui/material";
 
 // import AddTrackingForm from "./components/AddTrackingForm";
 import InfoBox from "./components/InfoBox";
@@ -38,7 +30,6 @@ V Add "Loading" spinner
 */
 
 function App() {
-  // const [isUpdated, setIsUpdated] = useState(false);
   const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [showAddItemModal, setShowAddItemModal] = useState(false);
