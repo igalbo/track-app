@@ -26,7 +26,6 @@ export async function getTrackingInfo(trNumber) {
     });
 
     if (!response.ok) {
-      console.log("Not ok");
       throw new Error(`Can't get details. Error code: ${response.status}`);
     }
 

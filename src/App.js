@@ -1,13 +1,11 @@
 import PrintIcon from "@mui/icons-material/Print";
 import DownloadIcon from "@mui/icons-material/Download";
-import { useEffect, useState } from "react";
 import { ThemeProvider, Button, LinearProgress, Box } from "@mui/material";
 
-// import AddTrackingForm from "./components/AddTrackingForm";
-import InfoBox from "./components/InfoBox";
-import DataTable from "./components/DataTable";
+import InfoBox from "./components/InfoBox/InfoBox";
+import DataTable from "./components/DataTable/DataTable";
 import AddItemForm from "./components/AddItemForm";
-import { getAllItems, getTrackingInfo } from "./api/api";
+import useSetData from "./hooks/useSetData";
 import THEME from "./components/UI/muiTheme";
 
 import "./App.css";
@@ -30,27 +28,7 @@ V Add "Loading" spinner
 */
 
 function App() {
-  const [data, setData] = useState();
-  const [isLoading, setIsLoading] = useState(false);
-  const [showAddItemModal, setShowAddItemModal] = useState(false);
-
-  useEffect(() => {
-    async function fetchData() {
-      setIsLoading(true);
-      const response = await getAllItems();
-
-      for (const key in response) {
-        const trackData = await getTrackingInfo(response[key].tracking);
-        response[key].status = trackData?.Status;
-      }
-      setData(response);
-      setIsLoading(false);
-    }
-
-    fetchData();
-  }, []);
-
-  console.log(data);
+  const { data, isLoading } = useSetData();
 
   const loadingBar = (
     <Box sx={{ width: "100%" }}>
@@ -92,8 +70,6 @@ function App() {
       <div className="table">
         {isLoading ? loadingBar : <DataTable data={data} />}
       </div>
-
-      {/* <AddTrackingForm updateList={setIsUpdated} /> */}
     </ThemeProvider>
   );
 }

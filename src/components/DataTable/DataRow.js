@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { getTrackingInfo } from "../api/api";
+import { getTrackingInfo } from "../../api/api";
 
 function DataRow({ row }) {
   const [status, setStatus] = useState(row.status);
@@ -35,9 +35,6 @@ function DataRow({ row }) {
   const refreshStatusHandler = async () => {
     setIsLoading(true);
     const trackData = await getTrackingInfo(row.tracking);
-
-    console.log(trackData);
-
     setStatus(trackData?.Status);
     setIsLoading(false);
   };
