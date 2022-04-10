@@ -18,29 +18,15 @@ export default function DataTable({ data }) {
     "Tags",
     "Actions",
   ];
+  const tableData =
+    data &&
+    data.map((entryData, index) => <DataRow key={index} data={entryData} />);
 
   const columns = columnNames.map((colName, i) => (
     <TableCell key={i} sx={{ fontWeight: 600 }}>
       {colName}
     </TableCell>
   ));
-
-  const rows = [];
-
-  for (const element in data) {
-    rows.push({
-      key: element,
-      date: data[element].date,
-      order: data[element].order,
-      tracking: data[element].tracking,
-      carrier: data[element].carrier,
-      status: data[element].status,
-      marketplace: data[element].marketplace,
-      tags: data[element].tags,
-    });
-  }
-
-  const tableData = rows.map((row, i) => <DataRow key={i} row={row} />);
 
   return (
     <TableContainer

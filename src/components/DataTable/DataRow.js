@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { useState, useEffect } from "react";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
@@ -6,23 +6,18 @@ import PauseIcon from "@mui/icons-material/Pause";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import Chip from "@mui/material/Chip";
 import Tooltip from "@mui/material/Tooltip";
-import Modal from "@mui/material/Modal";
-import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import { getTrackingInfo } from "../../api/api";
 
-function DataRow({ row }) {
-  const [status, setStatus] = useState(row.status);
-  const [openStatusModal, setOpenStatusModal] = useState(false);
+function DataRow({ data }) {
   const [isLoading, setIsLoading] = useState(false);
+  const { date, order, tracking, carrier, marketplace, tags } = data;
+  const [itemStatus, setItemStatus] = useState("");
 
   const maxStatusLength = 50;
   const pauseText =
     "Stop tracking status updates for this item. Delivered items are automatically stopped from being updated";
-  const handleOpenModal = () => setOpenStatusModal(true);
-  const handleCloseModal = () => setOpenStatusModal(false);
 
   const getTrackingUrl = (tracking, carrier) => {
     if (carrier.toLowerCase() === "usps") {
@@ -32,18 +27,31 @@ function DataRow({ row }) {
     return "#";
   };
 
-  const refreshStatusHandler = async () => {
-    setIsLoading(true);
-    const trackData = await getTrackingInfo(row.tracking);
-    setStatus(trackData?.Status);
-    setIsLoading(false);
-  };
+  useEffect(() => {
+    async function getStatus() {
+      setIsLoading(true);
+      const trackData = await getTrackingInfo(tracking);
+      console.log(trackData.message);
 
-  const statusColor = () => {
-    if (status.toLowerCase().startsWith("delivered")) {
-      return "success";
+      setItemStatus(trackData?.Status);
+      setIsLoading(false);
     }
-  };
+    getStatus();
+  }, [tracking]);
+
+  // const refreshStatusHandler = async () => {
+  //   setIsLoading(true);
+  //   const trackData = await getTrackingInfo(tracking);
+  //   console.log(trackData);
+  //   setItemStatus(trackData?.Status);
+  //   setIsLoading(false);
+  // };
+
+  // const statusColor = () => {
+  //   if (itemStatus.toLowerCase().startsWith("delivered")) {
+  //     return "success";
+  //   }
+  // };
 
   const style = {
     position: "absolute",
@@ -58,89 +66,69 @@ function DataRow({ row }) {
   };
 
   return (
-    <Fragment>
-      {status && (
-        <Modal
-          open={openStatusModal}
-          onClose={handleCloseModal}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
+    <TableRow row="true">
+      <TableCell>{date}</TableCell>
+      <TableCell>{order}</TableCell>
+
+      {tracking ? (
+        <TableCell
+          component="a"
+          rel="noopener noreferrer"
+          target="_blank"
+          href={getTrackingUrl(tracking, carrier)}
+          sx={{
+            "&:hover": {
+              backgroundColor: "#F7F9FA !important",
+            },
+          }}
         >
-          <Paper sx={style}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Text in a modal
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-            </Typography>
-          </Paper>
-        </Modal>
+          {tracking}
+        </TableCell>
+      ) : (
+        <TableCell>Not Available</TableCell>
       )}
-      <TableRow row="true">
-        <TableCell>{row.date}</TableCell>
-        <TableCell>{row.order}</TableCell>
 
-        {row.tracking ? (
-          <TableCell
-            component="a"
-            rel="noopener noreferrer"
-            target="_blank"
-            href={getTrackingUrl(row.tracking, row.carrier)}
-            sx={{
-              "&:hover": {
-                backgroundColor: "#F7F9FA !important",
-              },
-            }}
-          >
-            {row.tracking}
-          </TableCell>
+      <TableCell>{carrier}</TableCell>
+      <TableCell>
+        {isLoading ? (
+          <CircularProgress />
         ) : (
-          <TableCell>Not Available</TableCell>
+          itemStatus && (
+            <Chip
+              // color={statusColor()}
+              label={itemStatus?.substring(0, maxStatusLength)}
+            />
+          )
         )}
+      </TableCell>
+      <TableCell>{marketplace}</TableCell>
+      <TableCell>
+        {tags?.map((tag, i) => (
+          <Chip key={i} label={tag} />
+        ))}
+      </TableCell>
 
-        <TableCell>{row.carrier}</TableCell>
-        <TableCell>
-          {isLoading ? (
-            <CircularProgress />
-          ) : (
-            status && (
-              <Chip
-                onClick={handleOpenModal}
-                color={statusColor()}
-                label={status.substring(0, maxStatusLength)}
-              />
-            )
-          )}
-        </TableCell>
-        <TableCell>{row.marketplace}</TableCell>
-        <TableCell>
-          {row.tags?.map((tag, i) => (
-            <Chip key={i} label={tag} />
-          ))}
-        </TableCell>
-
-        <TableCell>
+      <TableCell>
+        <Button
+          sx={{ minWidth: "10px" }}
+          style={{ borderRadius: 4 }}
+          variant="contained"
+          disableElevation
+          // onClick={refreshStatusHandler}
+        >
+          <RefreshIcon />
+        </Button>
+        <Tooltip title={pauseText}>
           <Button
             sx={{ minWidth: "10px" }}
             style={{ borderRadius: 4 }}
-            variant="contained"
-            disableElevation
-            onClick={refreshStatusHandler}
+            variant="outlined"
           >
-            <RefreshIcon />
+            <PauseIcon />
           </Button>
-          <Tooltip title={pauseText}>
-            <Button
-              sx={{ minWidth: "10px" }}
-              style={{ borderRadius: 4 }}
-              variant="outlined"
-            >
-              <PauseIcon />
-            </Button>
-          </Tooltip>
-        </TableCell>
-      </TableRow>
-    </Fragment>
+        </Tooltip>
+      </TableCell>
+    </TableRow>
   );
 }
 

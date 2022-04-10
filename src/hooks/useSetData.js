@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-
-import { getAllItems, getTrackingInfo } from "../api/api";
+import { getAllItems } from "../api/api";
 
 function useSetData() {
   const [data, setData] = useState();
@@ -11,10 +10,6 @@ function useSetData() {
       setIsLoading(true);
       const response = await getAllItems();
 
-      for (const key in response) {
-        const trackData = await getTrackingInfo(response[key].tracking);
-        response[key].status = trackData?.Status;
-      }
       setData(response);
       setIsLoading(false);
     }

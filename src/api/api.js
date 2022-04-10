@@ -1,14 +1,17 @@
-// import { JSDOM } from "jsdom";
-// import fetch from "node-fetch";
-
 const FIREBASE_DOMAIN = "https://react-http-a246f-default-rtdb.firebaseio.com";
 const ALL_ITEMS = "tr-numbers";
 
 export async function getAllItems() {
   try {
+    let data = [];
     const response = await fetch(`${FIREBASE_DOMAIN}/${ALL_ITEMS}.json`);
     const result = await response.json();
-    return result;
+
+    Object.keys(result).forEach((key) => {
+      data.push({ key, ...result[key] });
+    });
+
+    return data;
   } catch (err) {
     return err;
   }
