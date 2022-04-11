@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,7 +8,10 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import DataRow from "./DataRow";
 
+import { deleteFromDatabase } from "../../api/api";
+
 export default function DataTable({ data }) {
+  const [filteredData, setFilteredData] = useState(data);
   const columnNames = [
     "Order date",
     "Order #",
@@ -18,9 +22,18 @@ export default function DataTable({ data }) {
     "Tags",
     "Actions",
   ];
+
+  const handleDeleteItem = (key) => {
+    deleteFromDatabase(key);
+    setFilteredData(() => filteredData.filter((entry) => entry.key !== key));
+  };
+
   const tableData =
-    data &&
-    data.map((entryData, index) => <DataRow key={index} data={entryData} />);
+    filteredData &&
+    filteredData.map((entryData) => {
+      console.log(entryData);
+      return <DataRow data={entryData} onDelete={handleDeleteItem} />;
+    });
 
   const columns = columnNames.map((colName, i) => (
     <TableCell key={i} sx={{ fontWeight: 600 }}>

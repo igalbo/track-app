@@ -53,6 +53,7 @@ export async function submitToDatabase(data) {
 }
 
 export async function deleteFromDatabase(id) {
+  console.log(id);
   const response = await fetch(`${FIREBASE_DOMAIN}/${ALL_ITEMS}/${id}.json`, {
     method: "DELETE",
     headers: {

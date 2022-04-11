@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Button from "@mui/material/Button";
 import PauseIcon from "@mui/icons-material/Pause";
+import DeleteIcon from "@mui/icons-material/Delete";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import Chip from "@mui/material/Chip";
 import Tooltip from "@mui/material/Tooltip";
@@ -10,14 +11,16 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import { getTrackingInfo } from "../../api/api";
 
-function DataRow({ data }) {
+function DataRow({ data, onDelete }) {
   const [isLoading, setIsLoading] = useState(false);
-  const { date, order, tracking, carrier, marketplace, tags } = data;
+  const { key, date, order, tracking, carrier, marketplace, tags } = data;
   const [itemStatus, setItemStatus] = useState("");
-
   const maxStatusLength = 50;
   const pauseText =
-    "Stop tracking status updates for this item. Delivered items are automatically stopped from being updated";
+    "Stop tracking status updates for this item. Delivered items stop updating automatically";
+
+  const getLabel = () =>
+    itemStatus?.substring(0, maxStatusLength).concat("...");
 
   const getTrackingUrl = (tracking, carrier) => {
     if (carrier.toLowerCase() === "usps") {
@@ -27,25 +30,21 @@ function DataRow({ data }) {
     return "#";
   };
 
-  useEffect(() => {
-    async function getStatus() {
-      setIsLoading(true);
-      const trackData = await getTrackingInfo(tracking);
-      console.log(trackData.message);
+  console.log(data);
 
-      setItemStatus(trackData?.Status);
-      setIsLoading(false);
-    }
-    getStatus();
+  const handleRefreshStatus = useCallback(async () => {
+    setIsLoading(true);
+    const trackData = await getTrackingInfo(tracking);
+    setItemStatus(trackData.Status || trackData.Error?.Description);
+    setIsLoading(false);
   }, [tracking]);
 
-  // const refreshStatusHandler = async () => {
-  //   setIsLoading(true);
-  //   const trackData = await getTrackingInfo(tracking);
-  //   console.log(trackData);
-  //   setItemStatus(trackData?.Status);
-  //   setIsLoading(false);
-  // };
+  const handleDelete = () => {
+    onDelete(key);
+  };
+  useEffect(() => {
+    handleRefreshStatus();
+  }, [handleRefreshStatus]);
 
   // const statusColor = () => {
   //   if (itemStatus.toLowerCase().startsWith("delivered")) {
@@ -94,10 +93,12 @@ function DataRow({ data }) {
           <CircularProgress />
         ) : (
           itemStatus && (
-            <Chip
-              // color={statusColor()}
-              label={itemStatus?.substring(0, maxStatusLength)}
-            />
+            <Tooltip title={itemStatus}>
+              <Chip
+                // color={statusColor()}
+                label={getLabel()}
+              />
+            </Tooltip>
           )
         )}
       </TableCell>
@@ -114,7 +115,7 @@ function DataRow({ data }) {
           style={{ borderRadius: 4 }}
           variant="contained"
           disableElevation
-          // onClick={refreshStatusHandler}
+          onClick={handleRefreshStatus}
         >
           <RefreshIcon />
         </Button>
@@ -125,6 +126,16 @@ function DataRow({ data }) {
             variant="outlined"
           >
             <PauseIcon />
+          </Button>
+        </Tooltip>
+        <Tooltip title="Delete item">
+          <Button
+            sx={{ minWidth: "10px" }}
+            style={{ borderRadius: 4 }}
+            variant="outlined"
+            onClick={handleDelete}
+          >
+            <DeleteIcon />
           </Button>
         </Tooltip>
       </TableCell>
